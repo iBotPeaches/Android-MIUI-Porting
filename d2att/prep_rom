@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "we about to port this bitch";
+dir=$PWD;
+
+#cleanup
+if [ -d $dir/wip ]; then
+    cd $dir/wip;
+    rm -rf *;
+else
+   mkdir -p $dir/wip;
+fi
+
+#cleanup
+if [ -d $dir/final_port ]; then
+    cd $dir/final_port;
+    rm -rf *;
+else
+   mkdir -p $dir/final_port;
+fi
