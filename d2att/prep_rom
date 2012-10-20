@@ -1,6 +1,13 @@
 #!/bin/bash
 
-echo "we about to port this bitch";
+#cleanup
+clear;
+
+echo "***************************************";
+echo "iBotPeaches .:. Auto Porting .:. ";
+echo "***************************************";
+
+#setup vars
 dir=$PWD;
 
 #cleanup
@@ -18,3 +25,25 @@ if [ -d $dir/final_port ]; then
 else
    mkdir -p $dir/final_port;
 fi
+
+#Check for MIUI & CM
+if [ ! -f $dir/raw_cm/boot.img ]; then
+   echo "Missing CM Rom. Please drop CM rom (unzipped) into raw_cm";
+   exit;
+fi
+
+if [ ! -d $dir/raw_miui/system ]; then
+   echo "Missing MIUI Rom. Please drop MIUI rom (unzipped) into raw_miui";
+   exit;
+fi
+
+#move CM base to port folder
+if [ -d $dir/port ]; then
+    rm -rf $dir/port;
+fi
+
+mkdir -p $dir/port
+
+#begin copy
+cd $dir/raw_cm;
+cp -arf * ../port;
