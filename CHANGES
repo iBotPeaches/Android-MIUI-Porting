@@ -1,3 +1,7 @@
+v0.0.7
+Added build.prop && updater-script d2att
+Added a good deal of copying from MIUI -> CM base
+
 v0.0.6
 Added my apktool v1.5.1-debug
 Worked on expanding scripts.

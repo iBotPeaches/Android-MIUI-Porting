@@ -10,6 +10,11 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 
+#helper vars
+miui_path="$dir/raw_miui";
+cm_path="$dir/raw_cm";
+port_path="$dir/port";
+
 #cleanup
 if [ -d $dir/wip ]; then
     cd $dir/wip;
@@ -47,3 +52,45 @@ mkdir -p $dir/port
 #begin copy
 cd $dir/raw_cm;
 cp -arf * ../port;
+
+#delete CM specific stuff
+rm -rf $dir/port/system/framework/*;
+rm -rf $dir/port/system/app/*;
+rm -rf $dir/port/system/font/*;
+rm -rf $dir/port/system/media/*;
+rm -rf $dir/port/system/xbin/su;
+
+## BEGIN COPY OF MIUI FILES
+
+#libs
+cp -arf $miui_path/system/lib/content-types.properties $port_path/system/lib/content-types.properties;
+cp -arf $miui_path/system/lib/liblbesec.so $port_path/system/lib/liblbesec.so;
+cp -arf $miui_path/system/lib/liblocSDK_2.5OEM.so $port_path/system/lib/liblocSDK_2.5OEM.so;
+
+#etc
+cp -arf $miui_path/system/etc/yellowpage.db $port_path/system/etc/yellowpage.db;
+cp -arf $miui_path/system/etc/telocation.td $port_path/system/etc/telocation.td;
+cp -arf $miui_path/system/etc/spn-conf.xml $port_path/system/etc/spn-conf.xml;
+
+#etc - permissions
+cp -arf $miui_path/system/etc/permissions/com.nxp.mifare.xml $port_path/system/etc/permissions/com.nxp.mifare.xml;
+cp -arf $miui_path/system/etc/permissions/miui-framework.xml $port_path/system/etc/permissions/miui-framework.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.android.media.effects.xml $port_path/system/etc/permissions/com.google.android.media.effects.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.widevine.software.drm.xml $port_path/system/etc/permissions/com.google.widevine.software.drm.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.android.maps.xml $port_path/system/etc/permissions/com.google.android.maps.xml;
+
+#xbin
+cp -arf $miui_path/system/xbin/su $port_path/system/xbin/su;
+cp -arf $miui_path/system/xbin/invoke-as $port_path/system/xbin/invoke-as;
+
+# the rest
+cp -arf $miui_path/system/app/* $port_path/system/app/;
+cp -arf $miui_path/system/framework/* $port_path/system/framework/;
+cp -arf $miui_path/system/fonts/* $port_path/system/fonts/;
+cp -arf $miui_path/system/media/* $port_path/system/media/;
+
+# Grab CM10 NFC
+cp -arf $cm_path/system/app/Nfc.apk $port_path/system/app/;
+
+## Use prebuilt updater.script & build.prop
+## Saves about 200 lines of bash. (Those reserved for MIUI Build Scripts)
