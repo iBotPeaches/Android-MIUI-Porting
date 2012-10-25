@@ -1,3 +1,7 @@
+v0.0.9
+Spit of CM/MIUI decompile of JARs
+Started merge of smali framework and manually merge using meld
+
 v0.0.8
 Added decompile of APKs, frames, jars
 Added apktool framework finder

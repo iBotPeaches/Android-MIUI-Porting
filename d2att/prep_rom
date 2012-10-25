@@ -99,7 +99,8 @@ cp -arf $cm_path/system/app/Gallery2.apk $port_path/system/app/LegacyCMGallery.a
 cp -arf $dir/move_over/* $port_path/;
 
 ## BEGIN DECOMPILE
-mkdir -p $dir/wip/jars;
+mkdir -p $dir/wip/jars/miui;
+mkdir -p $dir/wip/jars/cm;
 mkdir -p $dir/wip/apks;
 mkdir -p $dir/wip/frames;
 
@@ -109,12 +110,32 @@ for file in $port_path/system/framework/*.apk; do
 done
 
 # decompile jars that need smali editing
-$dir/../tools/apktool d $port_path/system/framework/services.jar $dir/wip/jars/services.jar.out
-$dir/../tools/apktool d $port_path/system/framework/framework.jar $dir/wip/jars/framework.jar.out
-$dir/../tools/apktool d $port_path/system/framework/android.policy.jar $dir/wip/jars/android.policy.jar.out
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/services.jar $dir/wip/jars/miui/services.jar.out
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/framework.jar $dir/wip/jars/miui/framework.jar.out
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/android.policy.jar $dir/wip/jars/miui/android.policy.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/services.jar $dir/wip/jars/cm/services.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/framework.jar $dir/wip/jars/cm/framework.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/android.policy.jar $dir/wip/jars/cm/android.policy.jar.out
 
 #decompile APKs that need editing.
-$dir/../tools/apktool d $port_path/system/framework/framework-res.apk $dir/wip/frames/framework-res.apk
-$dir/../tools/apktool d $port_path/system/app/Settings.apk $dir/wip/apks/Settings.apk
-$dir/../tools/apktool d $port_path/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk
+$dir/../tools/apktool d --no-src $port_path/system/framework/framework-res.apk $dir/wip/frames/framework-res.apk
+$dir/../tools/apktool d --no-src $port_path/system/app/Settings.apk $dir/wip/apks/Settings.apk
+$dir/../tools/apktool d --no-src $port_path/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk
+
+#lets merge smali that is just direct merge
+# USING CM FOLDER AS LIVE
+
+#kudos to Tejh for doing the long hours part
+wip_cm=$dir/wip/jars/cm;
+wip_miui=$dir/wip/jars/miui;
+
+#auto merge framework
+cp -arf $wip_cm/framework.jar.out/smali/android/view/GLES20*.smali $wip_miui/framework.jar.out/smali/android/view/;
+cp -arf $wip_cm/framework.jar.out/smali/android/view/HardwardCanvas.smali $wip_miui/framework.jar.out/smali/android/view/;
+cp -arf $wip_cm/framework.jar.out/smali/android/os/PowerManager*.smali $wip_miui/framework.jar.out/smali/android/os/;
+
+#manual diff
+echo "Merge nativeSetStylusIconEnabled()";
+sleep 1;
+meld $wip_miui/services.jar.out/smali/com/android/server/input/InputManagerService.smali $wip_cm/services.jar.out/smali/com/android/server/input/InputManagerService.smali;
 
