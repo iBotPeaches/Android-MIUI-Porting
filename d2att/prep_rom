@@ -83,14 +83,38 @@ cp -arf $miui_path/system/etc/permissions/com.google.android.maps.xml $port_path
 cp -arf $miui_path/system/xbin/su $port_path/system/xbin/su;
 cp -arf $miui_path/system/xbin/invoke-as $port_path/system/xbin/invoke-as;
 
-# the rest
+# the rest of MIUI
 cp -arf $miui_path/system/app/* $port_path/system/app/;
 cp -arf $miui_path/system/framework/* $port_path/system/framework/;
 cp -arf $miui_path/system/fonts/* $port_path/system/fonts/;
 cp -arf $miui_path/system/media/* $port_path/system/media/;
 
-# Grab CM10 NFC
+# Grab CM10 NFC && Gallery to fix Camera
 cp -arf $cm_path/system/app/Nfc.apk $port_path/system/app/;
+cp -arf $cm_path/system/app/Gallery2.apk $port_path/system/app/LegacyCMGallery.apk;
 
 ## Use prebuilt updater.script & build.prop
 ## Saves about 200 lines of bash. (Those reserved for MIUI Build Scripts)
+## Copy everything that is pre-made
+cp -arf $dir/move_over/* $port_path/;
+
+## BEGIN DECOMPILE
+mkdir -p $dir/wip/jars;
+mkdir -p $dir/wip/apks;
+mkdir -p $dir/wip/frames;
+
+# IF the frameworks
+for file in $port_path/system/framework/*.apk; do
+  $dir/../tools/apktool if $file;
+done
+
+# decompile jars that need smali editing
+$dir/../tools/apktool d $port_path/system/framework/services.jar $dir/wip/jars/services.jar.out
+$dir/../tools/apktool d $port_path/system/framework/framework.jar $dir/wip/jars/framework.jar.out
+$dir/../tools/apktool d $port_path/system/framework/android.policy.jar $dir/wip/jars/android.policy.jar.out
+
+#decompile APKs that need editing.
+$dir/../tools/apktool d $port_path/system/framework/framework-res.apk $dir/wip/frames/framework-res.apk
+$dir/../tools/apktool d $port_path/system/app/Settings.apk $dir/wip/apks/Settings.apk
+$dir/../tools/apktool d $port_path/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk
+
