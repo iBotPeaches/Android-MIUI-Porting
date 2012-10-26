@@ -167,6 +167,9 @@ echo "Merge all natives :)";
 sleep 3;
 meld $wip_miui/framework.jar.out/smali/android/content/res/AssetManager.smali $wip_cm/framework.jar.out/smali/android/content/res/AssetManager.smali
 
+echo "Merge sendURCNativeChars();";
+sleep 3;
+meld $wip_miui/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali $wip_cm/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali;
 #mod some apks
 echo 'Add this line at end: <bool name="config_forceDisableHardwareKeyboard">true</bool>, and disable showNavigationBar';
 sleep 3;
