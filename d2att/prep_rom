@@ -9,6 +9,8 @@ echo "***************************************";
 
 #setup vars
 dir=$PWD;
+phone="d2att";
+version="2.10.26";
 
 #helper vars
 miui_path="$dir/raw_miui";
@@ -24,11 +26,11 @@ else
 fi
 
 #cleanup
-if [ -d $dir/final_port ]; then
-    cd $dir/final_port;
+if [ -d $dir/COMPLETED_ZIPS ]; then
+    cd $dir/COMPLETED_ZIPS;
     rm -rf *;
 else
-   mkdir -p $dir/final_port;
+   mkdir -p $dir/COMPLETED_ZIPS;
 fi
 
 #Check for MIUI & CM
@@ -184,6 +186,42 @@ $dir/../tools/apktool b $dir/wip/jars/miui/services.jar.out
 $dir/../tools/apktool b $dir/wip/jars/miui/framework.jar.out
 $dir/../tools/apktool b $dir/wip/jars/miui/android.policy.jar.out
 
+#lets merge this back into the main APKs / JARs
+7za u -mx0 -tzip $dir/port/system/framework/android.policy.jar $dir/wip/jars/miui/android.policy.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/services.jar $dir/wip/jars/miui/services.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework.jar $dir/wip/jars/miui/framework.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/Settings.apk $dir/wip/apks/Settings.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/resources.arsc > /dev/null;
 
+
+#Lets zipalign these bastards.
+for file in $dir/port/system/app/*.apk; do
+  $dir/../tools/zipalign 4 $file $file.zipalligned;
+  echo "Zipaligned $(basename $file);";
+done;
+
+for file in $dir/port/system/app/*.apk; do
+   rm -rf $file;
+   mv $file.zipalligned $file;
+done
+
+# Zip this guy
+cd $dir/port/;
+rm -rf $dir/COMPLETED_ZIPS/miui_un*.zip;
+zip -r $dir/COMPLETED_ZIPS/miui_unsigned.zip * > /dev/null
+echo "ZIP Complete. Signing now...";
+
+#delete same name, old zip if there.
+if [ -f $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip ]; then
+   rm -rf $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
+fi
+
+
+#Sign the zip.
+java -Xmx2048m -jar $dir/../tools/signapk.jar -w $dir/../tools/testkey.x509.pem $dir/../tools/testkey.pk8 $dir/COMPLETED_ZIPS/miui_unsigned.zip $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
+
+#cleanup
+rm -rf $dir/COMPLETED_ZIPS/miui_un*.zip;
 
 

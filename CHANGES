@@ -1,3 +1,8 @@
+v0.1.2
+Added zipalign, zip make, zip sign.
+Finished injection of resources/classes.dex
+Scripts are done. Time to test :)
+
 v0.1.1
 Added zipalign for production of ZIP file
 Finished smali merges (i think?)

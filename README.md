@@ -11,7 +11,7 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 - Android SDK
 - Ubuntu 12.04+
 
-If you do not have Ubuntu, do not try and run my scripts. This are public just because I lost them in a HDD Crash, not because I am here to help everyone port using my script, but feel free to learn off of it and develop your own. Or use mine as a base. I do not mind.
+If you don't have Ubuntu, don't try and run my scripts. These are public just because I lost them in a HDD Crash, not because I am here to help everyone port using my script, but feel free to learn off of it and develop your own. Or use mine as a base. I do not mind.
 
 Put credit where credit is due.
 
