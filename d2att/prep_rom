@@ -204,6 +204,7 @@ $dir/../tools/apktool b $dir/wip/jars/miui/android.policy.jar.out
 7za u -mx0 -tzip $dir/port/system/framework/framework.jar $dir/wip/jars/miui/framework.jar.out/build/apk/classes.dex > /dev/null;
 7za u -mx0 -tzip $dir/port/system/app/Settings.apk $dir/wip/apks/Settings.apk/build/apk/resources.arsc > /dev/null;
 7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/AndroidManifest.xml > /dev/null;
 7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/resources.arsc > /dev/null;
 
 #Lets zipalign these bastards.

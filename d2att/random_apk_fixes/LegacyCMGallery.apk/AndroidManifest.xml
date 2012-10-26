@@ -27,13 +27,9 @@
         <uses-library android:name="com.google.android.media.effects" android:required="false" />
         <activity android:label="@string/movie_view_label" android:name="com.android.gallery3d.app.MovieActivity" android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="rtsp" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" />
@@ -51,8 +47,6 @@
             </intent-filter>
             <intent-filter> !-- HTTP live support -->
 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:mimeType="audio/x-mpegurl" />
@@ -169,8 +163,6 @@
         <uses-library android:name="com.google.android.media.effects" android:required="false" />
         <activity android:theme="@*android:style/Theme.Black.NoTitleBar.Fullscreen" android:label="@string/slideshow_dream_name" android:name="com.android.gallery3d.app.SlideshowDream" android:hardwareAccelerated="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.DREAM" />
             </intent-filter>
         </activity>
