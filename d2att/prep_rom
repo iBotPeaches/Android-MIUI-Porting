@@ -181,7 +181,7 @@ meld $wip_miui/services.jar.out/smali/com/android/server/PowerManagerService.sma
 
 #mod some apks
 echo 'Add this line at end: <bool name="config_forceDisableHardwareKeyboard">true</bool>, and disable showNavigationBar';
-sleep 3;
+sleep 5;
 kwrite $dir/wip/apks/framework-res.apk/res/values/bools.xml
 
 echo "add keybacklights";
