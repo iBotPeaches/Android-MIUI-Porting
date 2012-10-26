@@ -1,3 +1,11 @@
+v0.1.1
+Added zipalign for production of ZIP file
+Finished smali merges (i think?)
+Added manual merges
+Added License
+Added Readme update
+Added rebuild of apks
+
 v0.1.0
 Added fixed Gallery/CM10 Camera to prevent dupe icons on homescreen
 Added more smali merge
