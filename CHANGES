@@ -1,3 +1,7 @@
+v0.1.4
+Script space cleanup.
+Fixed CPU native bootloop problem.
+
 v0.1.3
 Fixed native bootloop problem w/ bluetooth
 Updated build.prop

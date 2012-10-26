@@ -140,6 +140,9 @@ cp -arf $wip_cm/framework.jar.out/smali/android/os/PowerManager*.smali $wip_miui
 cp -arf $wip_cm/framework.jar.out/smali/android/hardware/Camera*.smali $wip_miui/framework.jar.out/smali/android/hardware/;
 cp -arf $wip_cm/framework.jar.out/smali/android/server/BluetoothA2dpService*.smali $wip_miui/framework.jar.out/smali/android/server/;
 cp -arf $wip_cm/framework.jar.out/smali/android/webkit/WebView*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/WebSettings*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/HTML5*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/SelectActionModeCallback*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
 cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali
 cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali
 cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/RIL*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
@@ -153,6 +156,7 @@ cp -arf $wip_cm/framework.jar.out/smali/android/media/AudioManager\$2.smali $wip
 cp -arf $wip_cm/framework.jar.out/smali/android/media/MediaRecorder*.smali $wip_miui/framework.jar.out/smali/android/media/;
 cp -arf $wip_cm/framework.jar.out/smali/android/app/ProfileGroup*.smali $wip_miui/framework.jar.out/smali/android/app/;
 cp -arf $wip_cm/framework.jar.out/smali/android/os/IPowerManager*.smali $wip_miui/framework.jar.out/smali/android/os/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/app/ActivityTrigger.smali $wip_miui/framework.jar.out/smali/com/android/internal/app/;
 
 #move over merges for apk
 cp -arf $dir/random_apk_fixes/* $dir/wip/apks/;
@@ -170,6 +174,7 @@ meld $wip_miui/framework.jar.out/smali/android/content/res/AssetManager.smali $w
 echo "Merge sendURCNativeChars();";
 sleep 3;
 meld $wip_miui/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali $wip_cm/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali;
+
 #mod some apks
 echo 'Add this line at end: <bool name="config_forceDisableHardwareKeyboard">true</bool>, and disable showNavigationBar';
 sleep 3;
@@ -197,7 +202,6 @@ $dir/../tools/apktool b $dir/wip/jars/miui/android.policy.jar.out
 7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/resources.arsc > /dev/null;
 7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/resources.arsc > /dev/null;
 
-
 #Lets zipalign these bastards.
 for file in $dir/port/system/app/*.apk; do
   $dir/../tools/zipalign 4 $file $file.zipalligned;
@@ -220,11 +224,8 @@ if [ -f $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip ]; then
    rm -rf $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
 fi
 
-
 #Sign the zip.
 java -Xmx2048m -jar $dir/../tools/signapk.jar -w $dir/../tools/testkey.x509.pem $dir/../tools/testkey.pk8 $dir/COMPLETED_ZIPS/miui_unsigned.zip $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
 
 #cleanup
 rm -rf $dir/COMPLETED_ZIPS/miui_un*.zip;
-
-
