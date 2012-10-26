@@ -93,6 +93,9 @@ cp -arf $miui_path/system/media/* $port_path/system/media/;
 cp -arf $cm_path/system/app/Nfc.apk $port_path/system/app/;
 cp -arf $cm_path/system/app/Gallery2.apk $port_path/system/app/LegacyCMGallery.apk;
 
+#kill off old MIUI Camera
+rm -rf $port_path/system/app/LegacyCamera.apk;
+
 ## Use prebuilt updater.script & build.prop
 ## Saves about 200 lines of bash. (Those reserved for MIUI Build Scripts)
 ## Copy everything that is pre-made
@@ -123,7 +126,7 @@ $dir/../tools/apktool d --no-src $port_path/system/app/Settings.apk $dir/wip/apk
 $dir/../tools/apktool d --no-src $port_path/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk
 
 #lets merge smali that is just direct merge
-# USING CM FOLDER AS LIVE
+# USING MIUI FOLDER AS LIVE
 
 #kudos to Tejh for doing the long hours part
 wip_cm=$dir/wip/jars/cm;
@@ -131,8 +134,19 @@ wip_miui=$dir/wip/jars/miui;
 
 #auto merge framework
 cp -arf $wip_cm/framework.jar.out/smali/android/view/GLES20*.smali $wip_miui/framework.jar.out/smali/android/view/;
-cp -arf $wip_cm/framework.jar.out/smali/android/view/HardwardCanvas.smali $wip_miui/framework.jar.out/smali/android/view/;
+cp -arf $wip_cm/framework.jar.out/smali/android/view/HardwareCanvas.smali $wip_miui/framework.jar.out/smali/android/view/;
 cp -arf $wip_cm/framework.jar.out/smali/android/os/PowerManager*.smali $wip_miui/framework.jar.out/smali/android/os/;
+cp -arf $wip_cm/framework.jar.out/smali/android/hardware/Camera*.smali $wip_miui/framework.jar.out/smali/android/hardware/;
+cp -arf $wip_cm/framework.jar.out/smali/android/server/BluetoothA2dpService*.smali $wip_miui/framework.jar.out/smali/android/server/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/WebView*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/RIL*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/Samsung*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/QualcommSharedRIL*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+
+
+#todo
 
 #manual diff
 echo "Merge nativeSetStylusIconEnabled()";
