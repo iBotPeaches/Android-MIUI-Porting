@@ -1,3 +1,6 @@
+v0.2.0
+Added TMobile Port (same as AT&T except build/prop, CM Base and updater)
+
 v0.1.9
 Fix SDCard not being detected.
 

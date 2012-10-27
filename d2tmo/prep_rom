@@ -1,0 +1,238 @@
+#!/bin/bash
+
+#cleanup
+clear;
+
+echo "***************************************";
+echo "iBotPeaches .:. Auto Porting .:. ";
+echo "***************************************";
+
+#setup vars
+dir=$PWD;
+phone="d2tmo";
+version="2.10.26";
+
+#helper vars
+miui_path="$dir/raw_miui";
+cm_path="$dir/raw_cm";
+port_path="$dir/port";
+
+#cleanup
+if [ -d $dir/wip ]; then
+    cd $dir/wip;
+    rm -rf *;
+else
+   mkdir -p $dir/wip;
+fi
+
+#cleanup
+if [ -d $dir/COMPLETED_ZIPS ]; then
+    cd $dir/COMPLETED_ZIPS;
+    rm -rf *;
+else
+   mkdir -p $dir/COMPLETED_ZIPS;
+fi
+
+#Check for MIUI & CM
+if [ ! -f $dir/raw_cm/boot.img ]; then
+   echo "Missing CM Rom. Please drop CM rom (unzipped) into raw_cm";
+   exit;
+fi
+
+if [ ! -d $dir/raw_miui/system ]; then
+   echo "Missing MIUI Rom. Please drop MIUI rom (unzipped) into raw_miui";
+   exit;
+fi
+
+#move CM base to port folder
+if [ -d $dir/port ]; then
+    rm -rf $dir/port;
+fi
+
+mkdir -p $dir/port
+
+#begin copy
+cd $dir/raw_cm;
+cp -arf * ../port;
+
+#delete CM specific stuff
+rm -rf $dir/port/system/framework/*;
+rm -rf $dir/port/system/app/*;
+rm -rf $dir/port/system/font/*;
+rm -rf $dir/port/system/media/*;
+rm -rf $dir/port/system/xbin/su;
+
+## BEGIN COPY OF MIUI FILES
+
+#libs
+cp -arf $miui_path/system/lib/content-types.properties $port_path/system/lib/content-types.properties;
+cp -arf $miui_path/system/lib/liblbesec.so $port_path/system/lib/liblbesec.so;
+cp -arf $miui_path/system/lib/liblocSDK_2.5OEM.so $port_path/system/lib/liblocSDK_2.5OEM.so;
+
+#etc
+cp -arf $miui_path/system/etc/yellowpage.db $port_path/system/etc/yellowpage.db;
+cp -arf $miui_path/system/etc/telocation.td $port_path/system/etc/telocation.td;
+cp -arf $miui_path/system/etc/spn-conf.xml $port_path/system/etc/spn-conf.xml;
+
+#etc - permissions
+cp -arf $miui_path/system/etc/permissions/com.nxp.mifare.xml $port_path/system/etc/permissions/com.nxp.mifare.xml;
+cp -arf $miui_path/system/etc/permissions/miui-framework.xml $port_path/system/etc/permissions/miui-framework.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.android.media.effects.xml $port_path/system/etc/permissions/com.google.android.media.effects.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.widevine.software.drm.xml $port_path/system/etc/permissions/com.google.widevine.software.drm.xml;
+cp -arf $miui_path/system/etc/permissions/com.google.android.maps.xml $port_path/system/etc/permissions/com.google.android.maps.xml;
+
+#xbin
+cp -arf $miui_path/system/xbin/su $port_path/system/xbin/su;
+cp -arf $miui_path/system/xbin/invoke-as $port_path/system/xbin/invoke-as;
+
+# the rest of MIUI
+cp -arf $miui_path/system/app/* $port_path/system/app/;
+cp -arf $miui_path/system/framework/* $port_path/system/framework/;
+cp -arf $miui_path/system/fonts/* $port_path/system/fonts/;
+cp -arf $miui_path/system/media/* $port_path/system/media/;
+
+# Grab CM10 NFC && Gallery to fix Camera
+cp -arf $cm_path/system/app/Nfc.apk $port_path/system/app/;
+cp -arf $cm_path/system/app/Gallery2.apk $port_path/system/app/LegacyCMGallery.apk;
+
+#kill off old MIUI Camera
+rm -rf $port_path/system/app/LegacyCamera.apk;
+
+## Use prebuilt updater.script & build.prop
+## Saves about 200 lines of bash. (Those reserved for MIUI Build Scripts)
+## Copy everything that is pre-made
+cp -arf $dir/move_over/* $port_path/;
+
+## BEGIN DECOMPILE
+mkdir -p $dir/wip/jars/miui;
+mkdir -p $dir/wip/jars/cm;
+mkdir -p $dir/wip/apks;
+
+# IF the frameworks
+for file in $port_path/system/framework/*.apk; do
+  $dir/../tools/apktool if $file;
+done
+
+# decompile jars that need smali editing
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/services.jar $dir/wip/jars/miui/services.jar.out
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/framework.jar $dir/wip/jars/miui/framework.jar.out
+$dir/../tools/apktool d --no-debug-info $port_path/system/framework/android.policy.jar $dir/wip/jars/miui/android.policy.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/services.jar $dir/wip/jars/cm/services.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/framework.jar $dir/wip/jars/cm/framework.jar.out
+$dir/../tools/apktool d --no-debug-info $cm_path/system/framework/android.policy.jar $dir/wip/jars/cm/android.policy.jar.out
+
+#decompile APKs that need editing.
+$dir/../tools/apktool d --no-src $port_path/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk
+$dir/../tools/apktool d --no-src $port_path/system/app/Settings.apk $dir/wip/apks/Settings.apk
+$dir/../tools/apktool d --no-src $port_path/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk
+
+#lets merge smali that is just direct merge
+# USING MIUI FOLDER AS LIVE
+
+#kudos to Tejh for doing the long hours part
+wip_cm=$dir/wip/jars/cm;
+wip_miui=$dir/wip/jars/miui;
+
+#auto merge framework
+cp -arf $wip_cm/framework.jar.out/smali/android/view/GLES20*.smali $wip_miui/framework.jar.out/smali/android/view/;
+cp -arf $wip_cm/framework.jar.out/smali/android/view/HardwareCanvas.smali $wip_miui/framework.jar.out/smali/android/view/;
+cp -arf $wip_cm/framework.jar.out/smali/android/os/PowerManager*.smali $wip_miui/framework.jar.out/smali/android/os/;
+cp -arf $wip_cm/framework.jar.out/smali/android/hardware/Camera*.smali $wip_miui/framework.jar.out/smali/android/hardware/;
+cp -arf $wip_cm/framework.jar.out/smali/android/server/BluetoothA2dpService*.smali $wip_miui/framework.jar.out/smali/android/server/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/WebView*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/WebSettings*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/HTML5*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/android/webkit/SelectActionModeCallback*.smali $wip_miui/framework.jar.out/smali/android/webkit/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/BaseCommands.smali
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/PhoneFactory.smali
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/RIL*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/Samsung*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/telephony/QualcommSharedRIL*.smali $wip_miui/framework.jar.out/smali/com/android/internal/telephony/;
+cp -arf $wip_cm/framework.jar.out/smali/android/content/res/PackageRedirectionMap*.smali $wip_miui/framework.jar.out/smali/android/content/res/;
+cp -arf $wip_cm/framework.jar.out/smali/android/app/ProfileManager*.smali $wip_miui/framework.jar.out/smali/android/app/;
+cp -arf $wip_cm/framework.jar.out/smali/android/media/AudioFormat.smali $wip_miui/framework.jar.out/smali/android/media/;
+cp -arf $wip_cm/framework.jar.out/smali/android/media/AudioManager\$1.smali $wip_miui/framework.jar.out/smali/android/media/;
+cp -arf $wip_cm/framework.jar.out/smali/android/media/AudioManager\$2.smali $wip_miui/framework.jar.out/smali/android/media/;
+cp -arf $wip_cm/framework.jar.out/smali/android/media/MediaRecorder*.smali $wip_miui/framework.jar.out/smali/android/media/;
+cp -arf $wip_cm/framework.jar.out/smali/android/app/ProfileGroup*.smali $wip_miui/framework.jar.out/smali/android/app/;
+cp -arf $wip_cm/framework.jar.out/smali/android/os/IPowerManager*.smali $wip_miui/framework.jar.out/smali/android/os/;
+cp -arf $wip_cm/framework.jar.out/smali/com/android/internal/app/ActivityTrigger.smali $wip_miui/framework.jar.out/smali/com/android/internal/app/;
+
+#move over merges for apk
+cp -arf $dir/random_apk_fixes/* $dir/wip/apks/;
+echo "Auto merge complete. Time for manual merges :/";
+
+#manual diff
+echo "Merge nativeSetStylusIconEnabled()";
+sleep 1;
+meld $wip_miui/services.jar.out/smali/com/android/server/input/InputManagerService.smali $wip_cm/services.jar.out/smali/com/android/server/input/InputManagerService.smali;
+
+echo "Merge all natives :)";
+sleep 3;
+meld $wip_miui/framework.jar.out/smali/android/content/res/AssetManager.smali $wip_cm/framework.jar.out/smali/android/content/res/AssetManager.smali
+
+echo "Merge sendURCNativeChars();";
+sleep 3;
+meld $wip_miui/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali $wip_cm/framework.jar.out/smali/android/bluetooth/HeadsetBase.smali;
+
+echo "Merge nativeCpuBoost"
+sleep 4;
+meld $wip_miui/services.jar.out/smali/com/android/server/PowerManagerService.smali $wip_cm/services.jar.out/smali/com/android/server/PowerManagerService.smali;
+
+#mod some apks
+echo 'Add this line at end: <bool name="config_forceDisableHardwareKeyboard">true</bool>, and disable showNavigationBar';
+sleep 5;
+kwrite $dir/wip/apks/framework-res.apk/res/values/bools.xml
+
+echo "add keybacklights";
+sleep 3;
+kwrite $dir/wip/apks/framework-res.apk/res/values/arrays.xml;
+
+echo "Everything is done :) Rebuilding now....";
+
+##START THE REBUILD - apks
+$dir/../tools/apktool b $dir/wip/apks/Settings.apk
+$dir/../tools/apktool b $dir/wip/apks/framework-res.apk
+$dir/../tools/apktool b $dir/wip/apks/LegacyCMGallery.apk
+$dir/../tools/apktool b $dir/wip/jars/miui/services.jar.out
+$dir/../tools/apktool b $dir/wip/jars/miui/framework.jar.out
+$dir/../tools/apktool b $dir/wip/jars/miui/android.policy.jar.out
+
+#lets merge this back into the main APKs / JARs
+7za u -mx0 -tzip $dir/port/system/framework/android.policy.jar $dir/wip/jars/miui/android.policy.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/services.jar $dir/wip/jars/miui/services.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework.jar $dir/wip/jars/miui/framework.jar.out/build/apk/classes.dex > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/Settings.apk $dir/wip/apks/Settings.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/res > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/app/LegacyCMGallery.apk $dir/wip/apks/LegacyCMGallery.apk/build/apk/AndroidManifest.xml > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/resources.arsc > /dev/null;
+7za u -mx0 -tzip $dir/port/system/framework/framework-res.apk $dir/wip/apks/framework-res.apk/build/apk/res > /dev/null;
+
+#Lets zipalign these bastards.
+for file in $dir/port/system/app/*.apk; do
+  $dir/../tools/zipalign 4 $file $file.zipalligned;
+  echo "Zipaligned $(basename $file);";
+done;
+
+for file in $dir/port/system/app/*.apk; do
+   rm -rf $file;
+   mv $file.zipalligned $file;
+done
+
+# Zip this guy
+cd $dir/port/;
+rm -rf $dir/COMPLETED_ZIPS/miui_un*.zip;
+zip -r $dir/COMPLETED_ZIPS/miui_unsigned.zip * > /dev/null
+echo "ZIP Complete. Signing now...";
+
+#delete same name, old zip if there.
+if [ -f $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip ]; then
+   rm -rf $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
+fi
+
+#Sign the zip.
+java -Xmx2048m -jar $dir/../tools/signapk.jar -w $dir/../tools/testkey.x509.pem $dir/../tools/testkey.pk8 $dir/COMPLETED_ZIPS/miui_unsigned.zip $dir/COMPLETED_ZIPS/miuiandroid_$phone-$version.zip;
+
+#cleanup
+rm -rf $dir/COMPLETED_ZIPS/miui_un*.zip;
