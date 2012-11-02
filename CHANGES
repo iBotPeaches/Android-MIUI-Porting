@@ -1,3 +1,6 @@
+v0.2.3
+Fixed bootloop due to InputService.
+
 v0.2.2
 Updated to 2.11.2
 Added new telelocation.idf name instead of telelocation.td

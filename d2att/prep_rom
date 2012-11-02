@@ -179,6 +179,10 @@ echo "Merge nativeCpuBoost"
 sleep 4;
 meld $wip_miui/services.jar.out/smali/com/android/server/PowerManagerService.smali $wip_cm/services.jar.out/smali/com/android/server/PowerManagerService.smali;
 
+echo "wanted static, got instance for field Landroid/webkit/HTML5VideoView;.mPlayer";
+sleep 4;
+kwrite $wip_miui/framework.jar.out/smali/android/webkit/HTML5VideoView.smali
+
 #mod some apks
 echo 'Add this line at end: <bool name="config_forceDisableHardwareKeyboard">true</bool>, and disable showNavigationBar';
 sleep 5;
