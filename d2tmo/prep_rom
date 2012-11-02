@@ -10,7 +10,7 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 phone="d2tmo";
-version="2.10.26";
+version="2.11.2";
 
 #helper vars
 miui_path="$dir/raw_miui";
@@ -71,7 +71,7 @@ cp -arf $miui_path/system/lib/liblocSDK_2.5OEM.so $port_path/system/lib/liblocSD
 
 #etc
 cp -arf $miui_path/system/etc/yellowpage.db $port_path/system/etc/yellowpage.db;
-cp -arf $miui_path/system/etc/telocation.td $port_path/system/etc/telocation.td;
+cp -arf $miui_path/system/etc/telocation.idf $port_path/system/etc/telocation.idf;
 cp -arf $miui_path/system/etc/spn-conf.xml $port_path/system/etc/spn-conf.xml;
 
 #etc - permissions
