@@ -10,7 +10,7 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 phone="d2tmo";
-version="2.11.2";
+version="2.11.9";
 
 #helper vars
 miui_path="$dir/raw_miui";
