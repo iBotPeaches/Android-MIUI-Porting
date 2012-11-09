@@ -64,6 +64,10 @@
         </activity>
         <activity android:label="@string/app_name" android:name="com.android.gallery3d.app.Gallery" android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <category android:name="android.intent.category.OPENABLE" />
                 <data android:mimeType="vnd.android.cursor.dir/image" />
@@ -137,7 +141,7 @@
             </intent-filter>
             <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
         </activity>
-        <activity android:theme="@android:style/Theme.Translucent.NoTitleBar" android:name="com.android.gallery3d.app.Wallpaper" android:configChanges="keyboardHidden|orientation|screenSize">
+        <activity android:theme="@*android:style/Theme.Translucent.NoTitleBar" android:name="com.android.gallery3d.app.Wallpaper" android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter android:label="@string/camera_setas_wallpaper">
                 <action android:name="android.intent.action.ATTACH_DATA" />
                 <data android:mimeType="image/*" />
@@ -163,7 +167,7 @@
                 <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" android:label="@string/app_name" android:name="com.android.gallery3d.photoeditor.PhotoEditor" android:process=":edit" android:configChanges="keyboardHidden|orientation|screenSize" android:hardwareAccelerated="true">
+        <activity android:theme="@*android:style/Theme.Holo.NoActionBar.Fullscreen" android:label="@string/app_name" android:name="com.android.gallery3d.photoeditor.PhotoEditor" android:process=":edit" android:configChanges="keyboardHidden|orientation|screenSize" android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
                 <data android:mimeType="image/*" />
@@ -171,19 +175,19 @@
             </intent-filter>
         </activity>
         <uses-library android:name="com.google.android.media.effects" android:required="false" />
-        <activity android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" android:label="@string/slideshow_dream_name" android:name="com.android.gallery3d.app.SlideshowDream" android:hardwareAccelerated="true">
+        <activity android:theme="@*android:style/Theme.Black.NoTitleBar.Fullscreen" android:label="@string/slideshow_dream_name" android:name="com.android.gallery3d.app.SlideshowDream" android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.DREAM" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.Holo" android:name="com.android.gallery3d.settings.GallerySettings" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:theme="@*android:style/Theme.Holo" android:name="com.android.gallery3d.settings.GallerySettings" android:configChanges="keyboardHidden|orientation|screenSize" />
         <provider android:name="com.android.gallery3d.provider.GalleryProvider" android:authorities="com.android.gallery3d.provider" android:syncable="false" android:grantUriPermissions="true" />
         <activity android:name="com.android.gallery3d.gadget.WidgetClickHandler" />
         <activity android:theme="@style/DialogPickerTheme" android:name="com.android.gallery3d.app.DialogPicker" android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:theme="@style/DialogPickerTheme" android:name="com.android.gallery3d.app.AlbumPicker" android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:theme="@android:style/Theme.Holo.Dialog" android:name="com.android.gallery3d.gadget.WidgetTypeChooser" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:theme="@*android:style/Theme.Holo.Dialog" android:name="com.android.gallery3d.gadget.WidgetTypeChooser" android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:theme="@style/ThemeCamera" android:label="@string/camera_label" android:icon="@mipmap/ic_launcher_camera" android:name="com.android.camera.Camera" android:taskAffinity="com.android.camera" android:clearTaskOnLaunch="true" android:configChanges="keyboardHidden|orientation|screenSize" android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -237,7 +241,7 @@
             </intent-filter>
         </receiver>
         <service android:name="com.android.gallery3d.gadget.WidgetService" android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <activity android:theme="@android:style/Theme.Translucent.NoTitleBar" android:name="com.android.gallery3d.gadget.WidgetConfigure" android:configChanges="keyboardHidden|orientation|screenSize">
+        <activity android:theme="@*android:style/Theme.Translucent.NoTitleBar" android:name="com.android.gallery3d.gadget.WidgetConfigure" android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
