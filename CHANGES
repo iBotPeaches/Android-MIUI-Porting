@@ -1,3 +1,7 @@
+v0.2.7
+Updated build.prop for 2.11.16
+Removed all modifications to Camera so it shows up.
+
 v0.2.6
 Forgot to update prep_rom versioning.
 
