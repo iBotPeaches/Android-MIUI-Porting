@@ -69,7 +69,8 @@ cp -arf $miui_path/system/lib/content-types.properties $port_path/system/lib/con
 cp -arf $miui_path/system/lib/liblbesec.so $port_path/system/lib/liblbesec.so;
 cp -arf $miui_path/system/lib/liblocSDK_2.5OEM.so $port_path/system/lib/liblocSDK_2.5OEM.so;
 cp -arf $miui_path/system/lib/libjni_resource_drm.so $port_path/system/lib/libjni_resource_drm.so;
-cp -arf $miui_path/system/lib/libshell* $port_path/system/lib/;
+#cp -arf $miui_path/system/lib/libshell* $port_path/system/lib/;
+cp -arf $miui_path/system/lib/libphotocli.so $port_path/system/lib/libphotocli.so;
 
 #etc
 cp -arf $miui_path/system/etc/yellowpage.db $port_path/system/etc/yellowpage.db;
@@ -88,10 +89,10 @@ cp -arf $miui_path/system/etc/permissions/com.google.android.maps.xml $port_path
 #xbin
 cp -arf $miui_path/system/xbin/su $port_path/system/xbin/su;
 cp -arf $miui_path/system/xbin/invoke-as $port_path/system/xbin/invoke-as;
-cp -arf $miui_path/system/xbin/shelld $port_path/system/xbin/shelld;
+#cp -arf $miui_path/system/xbin/shelld $port_path/system/xbin/shelld;
 
 #bin
-cp -arf $miui_path/system/bin/installd $port_path/system/bin/installd;
+#cp -arf $miui_path/system/bin/installd $port_path/system/bin/installd;
 
 # the rest of MIUI
 cp -arf $miui_path/system/app/* $port_path/system/app/;
