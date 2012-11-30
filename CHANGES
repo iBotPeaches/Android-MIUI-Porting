@@ -1,3 +1,12 @@
+v0.3.2
+Updated to miui 2.11.30 (d2att)
+Included linux makebootfs/makebootimg into tools folder instead of relying on path
+
+v0.3.1
+Added ability to fix boot.img at build (tools)
+Updated to miui 2.11.23 (d2att)
+Added 2 new bins to handle special MIUI Shell (d2att)
+
 v0.3.0
 Fixes MIUIHome & Theme FC
 
