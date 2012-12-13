@@ -10,7 +10,7 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 phone="d2att";
-version="2.11.30";
+version="2.12.7";
 
 #helper vars
 miui_path="$dir/raw_miui";
@@ -111,7 +111,6 @@ cp -arf $cm_path/system/app/Gallery2.apk $port_path/system/app/LegacyCMGallery.a
 rm -rf $port_path/system/app/LegacyCamera.apk;
 
 ## Use prebuilt updater.script & build.prop
-## Saves about 200 lines of bash. (Those reserved for MIUI Build Scripts)
 ## Copy everything that is pre-made
 cp -arf $dir/move_over/* $port_path/;
 
@@ -127,10 +126,12 @@ cp -arf $port_path/boot.img $dir/wip/boot/;
 
 # decompile it
 cd $dir/wip/boot;
-perl $dir/../tools/split_bootimg.pl boot.img;
+perl $dir/../tools/split-bootimg.pl boot.img;
 sleep 2;
 cd $dir/wip/boot/ramdisk;
+sleep 4;
 gzip -dc ../boot.img-ramdisk.gz | cpio -i
+cd ..
 
 # edit it
 echo "
@@ -142,14 +143,13 @@ service miuiserver /system/bin/miuiserver_run_in_initrc
     class main" >> $dir/wip/boot/ramdisk/init.rc;
     
 # rebuild it
-cd ..
-#find . | cpio -o -H newc | gzip > ../newramdisk.cpio.gz
-$dir/../tools/mkbootfs ./ramdisk | gzip > ramdisk-new.gz
-$dir/../tools/mkbootimg --cmdline 'no_console_suspend=1 console=null' --kernel boot.img-kernel --ramdisk ramdisk-new.gz -o boot-new.img
+$dir/../tools/mkbootfs ./ramdisk | gzip > ramdisk-new.gz;
+sleep 2;
+$dir/../tools/mkbootimg --cmdline 'androidboot.hardware=qcom user_debug=31 zcache' --kernel boot.img-kernel --ramdisk ramdisk-new.gz -o boot-new.img;
 echo "boot.img hacked";
 
 # check for new boot-img
-if [ -f "$dir/wip/boot/boot-new.img" ]; then
+if [ -f "$dir/wip/boot/boot.img" ]; then
    mv $dir/wip/boot/boot-new.img $port_path/boot.img;
    echo "Sucessfully merged boot.img";
 else 

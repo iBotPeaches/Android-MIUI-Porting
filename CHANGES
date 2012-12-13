@@ -1,3 +1,12 @@
+v0.3.4
+Updated d2tmo to 2.12.7
+Copied fixes for stalled theme manager over to d2tmo
+
+v0.3.3
+Added miui 2.12.7
+It appears I suck at building an automated boot.img compiler/decompiler, so using a kitchen for now.
+Fixed MIUI staling issue to shelld.
+
 v0.3.2
 Updated to miui 2.11.30 (d2att)
 Included linux makebootfs/makebootimg into tools folder instead of relying on path
