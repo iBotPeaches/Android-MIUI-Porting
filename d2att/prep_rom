@@ -246,12 +246,12 @@ kwrite $dir/wip/apks/framework-res.apk/res/values/arrays.xml;
 echo "Everything is done :) Rebuilding now....";
 
 ##START THE REBUILD - apks
-$dir/../tools/apktool b $dir/wip/apks/Settings.apk
-$dir/../tools/apktool b $dir/wip/apks/framework-res.apk
-#$dir/../tools/apktool b $dir/wip/apks/LegacyCMGallery.apk
-$dir/../tools/apktool b $dir/wip/jars/miui/services.jar.out
-$dir/../tools/apktool b $dir/wip/jars/miui/framework.jar.out
-$dir/../tools/apktool b $dir/wip/jars/miui/android.policy.jar.out
+$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/apks/Settings.apk
+$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/apks/framework-res.apk
+#$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/apks/LegacyCMGallery.apk
+$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/jars/miui/services.jar.out
+$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/jars/miui/framework.jar.out
+$dir/../tools/apktool b --aapt $dir/../tools/aapt $dir/wip/jars/miui/android.policy.jar.out
 
 #lets merge this back into the main APKs / JARs
 7za u -mx0 -tzip $dir/port/system/framework/android.policy.jar $dir/wip/jars/miui/android.policy.jar.out/build/apk/classes.dex > /dev/null;
