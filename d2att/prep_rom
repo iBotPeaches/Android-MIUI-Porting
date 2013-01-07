@@ -10,7 +10,7 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 phone="d2att";
-version="2.12.7";
+version="2.12.21";
 
 #helper vars
 miui_path="$dir/raw_miui";
@@ -73,6 +73,9 @@ cp -arf $miui_path/system/lib/libshell_jni.so $port_path/system/lib/libshell_jni
 cp -arf $miui_path/system/lib/libshell.so $port_path/system/lib/libshell.so;
 cp -arf $miui_path/system/lib/libshellservice.so $port_path/system/lib/libshellservice.so;
 cp -arf $miui_path/system/lib/libphotocli.so $port_path/system/lib/libphotocli.so;
+cp -arf $miui_path/system/lib/libaudiofp.so $port_path/system/lib/libaudiofp.so;
+cp -arf $miui_path/system/lib/libffmpeg_xm.so $port_path/system/lib/libffmpeg_xm.so;
+cp -arf $miui_path/system/lib/libffplayer_jni.so $port_path/system/lib/libffplayer_jni.so;
 
 #etc
 cp -arf $miui_path/system/etc/yellowpage.db $port_path/system/etc/yellowpage.db;
