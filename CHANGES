@@ -1,3 +1,7 @@
+v0.3.7
+Updated to MIUI v3.1.11 for both d2att/d2tmo
+Fixed light led issue (i hope)
+
 v0.3.6
 Used --aapt in Apktool v1.5.1 to remove needed ability of aapt in PATH (to allow customized MIUI aapt)
 

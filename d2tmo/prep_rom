@@ -10,7 +10,7 @@ echo "***************************************";
 #setup vars
 dir=$PWD;
 phone="d2tmo";
-version="2.12.7";
+version="3.1.11";
 
 #helper vars
 miui_path="$dir/raw_miui";
@@ -154,7 +154,7 @@ echo "boot.img hacked";
 
 # check for new boot-img
 if [ -f "$dir/wip/boot/boot.img" ]; then
-   mv $dir/wip/boot/boot-new.img $port_path/boot.img;
+   #mv $dir/wip/boot/boot-new.img $port_path/boot.img;
    echo "Sucessfully merged boot.img";
 else 
    echo "boot.img hack failed. ugh";
